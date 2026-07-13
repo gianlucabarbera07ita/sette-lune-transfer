@@ -25,7 +25,8 @@
     "addToCart": "Añadir al carrito",
     "price": "Precio",
     "perPerson": "por persona",
-    "selectOption": "Selecciona un horario"
+    "selectOption": "Selecciona un horario",
+    "addedNotice": "¡Añadido al carrito! Puedes seguir eligiendo traslados para otros días, y luego ir al"
   },
   "cart": {
     "title": "Tu carrito",
