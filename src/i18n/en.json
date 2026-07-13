@@ -25,7 +25,8 @@
     "addToCart": "Add to cart",
     "price": "Price",
     "perPerson": "per person",
-    "selectOption": "Select a time"
+    "selectOption": "Select a time",
+    "addedNotice": "Added to cart! You can keep choosing transfers for other days, and go to the"
   },
   "cart": {
     "title": "Your cart",
