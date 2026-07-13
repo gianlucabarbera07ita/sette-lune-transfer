@@ -100,9 +100,9 @@ async function main() {
   const ev3 = await upsertEvent({
     slug: 'sabato-8-agosto-secret-location',
     labelDate: dt('2026-08-08', '00:00'),
-    nameIt: 'Secret Location – Fontanasalsa',
-    nameEn: 'Secret Location – Fontanasalsa',
-    nameEs: 'Secret Location – Fontanasalsa',
+    nameIt: 'Secret Location',
+    nameEn: 'Secret Location',
+    nameEs: 'Secret Location',
     descriptionIt: 'Sabato 8 agosto — la posizione esatta verrà comunicata il giorno stesso.',
     descriptionEn: 'Saturday 8 August — the exact location will be revealed on the day.',
     descriptionEs: 'Sábado 8 de agosto — la ubicación exacta se revelará el mismo día.',
