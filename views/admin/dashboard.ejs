@@ -16,10 +16,36 @@
     </div>
   </header>
   <main class="container">
+    <% if (resetDone) { %>
+      <div class="notice success">Tutte le prenotazioni sono state cancellate e i posti azzerati.</div>
+    <% } %>
+
     <p class="event-meta">
       Prenotazioni pagate: <strong><%= paidCount %></strong> ·
       In attesa di pagamento (hold attivo): <strong><%= pendingCount %></strong>
     </p>
+
+    <p class="event-meta">
+      <a href="/admin/export-all.csv">Esporta tutte le prenotazioni (CSV)</a>
+    </p>
+
+    <details style="margin: 20px 0; padding: 12px; border: 1px solid var(--color-danger, #c0392b); border-radius: 6px;">
+      <summary style="cursor: pointer; color: var(--color-danger, #c0392b); font-weight: bold;">
+        Azzera tutte le prenotazioni e libera tutti i posti
+      </summary>
+      <p style="margin-top: 10px;">
+        Cancella <strong>definitivamente</strong> tutte le prenotazioni (pagate e in attesa)
+        e riporta tutti i posti allo stato libero. Usalo solo per ripulire i dati di test
+        prima di aprire le vendite vere: <strong>non usarlo dopo</strong>, perché
+        cancellerebbe anche le prenotazioni reali dei clienti.
+      </p>
+      <form method="POST" action="/admin/reset-bookings"
+            onsubmit="return confirm('Sei sicuro? Questa azione cancella TUTTE le prenotazioni e non si può annullare.');">
+        <button type="submit" class="btn-secondary" style="border-color: var(--color-danger, #c0392b); color: var(--color-danger, #c0392b);">
+          Azzera tutto
+        </button>
+      </form>
+    </details>
 
     <% events.forEach(function (event) { %>
       <div class="event-card">
