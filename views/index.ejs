@@ -3,6 +3,13 @@
 <h1><%= t('home.title') %></h1>
 <p class="intro"><%= t('home.intro') %></p>
 
+<% if (justAdded) { %>
+  <div class="notice success">
+    <%= t('home.addedNotice') %>
+    <a href="/<%= lang %>/carrello"><%= t('cart.title') %> (<%= cartCount %>)</a>
+  </div>
+<% } %>
+
 <% events.forEach(function (event) { %>
   <div class="event-card">
     <h2><%= eventName(event, lang) %></h2>
