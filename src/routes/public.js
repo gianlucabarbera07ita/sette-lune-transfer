@@ -12,7 +12,8 @@ const MAX_PEOPLE_PER_ITEM = 16;
 router.get('/', async (req, res, next) => {
   try {
     const events = await getEventsWithAvailability();
-    res.render('index', { events });
+    const cartCount = getCartRaw(req).length;
+    res.render('index', { events, justAdded: req.query.added === '1', cartCount });
   } catch (err) {
     next(err);
   }
@@ -57,7 +58,10 @@ router.post('/cart/add', async (req, res, next) => {
     });
     setCartRaw(res, cart);
 
-    res.redirect(`/${req.lang}/carrello`);
+    // Resta sulla pagina dei transfer (invece di saltare al carrello):
+    // l'utente può continuare a scegliere altre corse per altri giorni e
+    // andare al carrello solo quando è pronto a pagare.
+    res.redirect(`/${req.lang}/?added=1`);
   } catch (err) {
     next(err);
   }
