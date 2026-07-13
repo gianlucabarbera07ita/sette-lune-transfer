@@ -61,16 +61,27 @@ router.post('/checkout', async (req, res, next) => {
 
     const baseUrl = baseUrlFrom(req);
 
-    if (paymentMethod === 'stripe') {
-      const session = await createCheckoutSession(booking, baseUrl);
-      await prisma.booking.update({ where: { id: booking.id }, data: { paymentRef: session.id } });
-      return res.redirect(303, session.url);
-    }
+    // Se Stripe/PayPal rifiutano la richiesta (es. chiavi non ancora
+    // configurate, servizio momentaneamente giù), rilasciamo SUBITO i posti
+    // appena bloccati invece di lasciarli "in attesa" fino allo scadere dei
+    // 15 minuti: altrimenti un tentativo fallito terrebbe inutilmente
+    // occupati posti che nessuno ha davvero pagato.
+    try {
+      if (paymentMethod === 'stripe') {
+        const session = await createCheckoutSession(booking, baseUrl);
+        await prisma.booking.update({ where: { id: booking.id }, data: { paymentRef: session.id } });
+        return res.redirect(303, session.url);
+      }
 
-    // paypal
-    const { orderId, approveUrl } = await createOrder(booking, baseUrl);
-    await prisma.booking.update({ where: { id: booking.id }, data: { paymentRef: orderId } });
-    return res.redirect(303, approveUrl);
+      // paypal
+      const { orderId, approveUrl } = await createOrder(booking, baseUrl);
+      await prisma.booking.update({ where: { id: booking.id }, data: { paymentRef: orderId } });
+      return res.redirect(303, approveUrl);
+    } catch (paymentErr) {
+      console.error('Errore avvio pagamento, rilascio i posti bloccati:', paymentErr);
+      await markBookingFailed(booking.id).catch((e) => console.error('Errore nel rilascio posti:', e));
+      return res.redirect(`/${req.lang}/carrello?error=payment_setup`);
+    }
   } catch (err) {
     next(err);
   }
