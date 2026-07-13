@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Corsa <%= formatTime(slot.departureAt, 'it') %> – Sette Lune</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="/admin">← Pannello prenotazioni</a>
+    </div>
+  </header>
+  <main class="container">
+    <h1><%= slot.event.nameIt %> — <%= slot.direction === 'ANDATA' ? 'Andata' : 'Ritorno' %></h1>
+    <p class="event-meta"><%= formatDateLong(slot.departureAt, 'it') %> — <%= formatTime(slot.departureAt, 'it') %></p>
+
+    <p><a class="btn" href="/admin/slot/<%= slot.id %>/export.csv">Esporta CSV</a></p>
+
+    <% if (!bookingItems.length) { %>
+      <p>Nessuna prenotazione per questa corsa.</p>
+    <% } else { %>
+      <table class="admin-table">
+        <thead>
+          <tr><th>Codice</th><th>Nome</th><th>Email</th><th>Persone</th><th>Tipo</th></tr>
+        </thead>
+        <tbody>
+          <% bookingItems.forEach(function (item) { %>
+            <tr>
+              <td><%= item.booking.code %></td>
+              <td><%= item.booking.customerName %></td>
+              <td><%= item.booking.customerEmail %></td>
+              <td><%= item.numPeople %></td>
+              <td><%= item.type %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </main>
+</body>
+</html>

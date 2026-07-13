@@ -1,0 +1,93 @@
+{
+  "siteName": "Sette Lune – Festival Transfers",
+  "nav": {
+    "home": "Transfers",
+    "cart": "Cart"
+  },
+  "home": {
+    "title": "Book your Sette Lune transfers",
+    "intro": "Piazza Sant'Agostino, Trapani – meeting point for all departures. Choose the rides you need for each day: you can book several days in a single payment.",
+    "meetingPoint": "Meeting point",
+    "travelTime": "Travel time",
+    "minutes": "minutes",
+    "outbound": "Outbound",
+    "return": "Return",
+    "seatsLeft": "seats left",
+    "soldOut": "Sold out",
+    "secretLocationNotice": "Secret location: the exact location will be revealed on the day of the event.",
+    "chooseType": "Transfer type",
+    "oneWayOutbound": "Outbound only",
+    "oneWayReturn": "Return only",
+    "roundTrip": "Round trip",
+    "outboundTime": "Outbound time",
+    "returnTime": "Return time",
+    "people": "Number of people",
+    "addToCart": "Add to cart",
+    "price": "Price",
+    "perPerson": "per person",
+    "selectOption": "Select a time"
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty. Go back to the transfers page to add a booking.",
+    "backToHome": "Back to transfers",
+    "event": "Event",
+    "type": "Type",
+    "people": "People",
+    "outboundTime": "Outbound",
+    "returnTime": "Return",
+    "price": "Price",
+    "remove": "Remove",
+    "total": "Total",
+    "continueTitle": "Your details",
+    "name": "Full name",
+    "email": "Email (you'll receive your confirmation and booking code here)",
+    "emailConfirm": "Confirm email",
+    "paymentMethod": "Payment method",
+    "payWithCard": "Pay by card",
+    "payWithPaypal": "Pay with PayPal",
+    "submit": "Proceed to payment",
+    "unavailableNotice": "Some items in your cart are no longer available in the requested quantity. Reduce the number of people or remove the row before continuing.",
+    "emailMismatch": "The two email addresses do not match.",
+    "errorGeneric": "Please check your details and try again.",
+    "paymentCancelled": "Payment was cancelled. The seats have been released, you can try again whenever you like."
+  },
+  "confirmation": {
+    "titlePaid": "Booking confirmed!",
+    "titlePending": "Verifying your payment…",
+    "titleFailed": "Payment unsuccessful",
+    "code": "Booking code",
+    "codeNotice": "Keep this code: you'll be asked for it before boarding the transfer.",
+    "pendingNotice": "Your payment is being verified, this page will update automatically. If nothing changes within a minute, please check your email.",
+    "failedNotice": "The payment failed or expired. The seats have been released, you can try again from your cart.",
+    "backToHome": "Back to transfers",
+    "summary": "Booking summary",
+    "emailSentNotice": "We've sent you a confirmation email with all the details."
+  },
+  "admin": {
+    "loginTitle": "Bookings dashboard login",
+    "password": "Password",
+    "login": "Log in",
+    "wrongPassword": "Wrong password",
+    "title": "Bookings dashboard",
+    "logout": "Log out",
+    "filterAll": "All rides",
+    "exportCsv": "Export CSV",
+    "seatsBooked": "booked",
+    "seatsHeld": "payment pending",
+    "seatsFree": "free",
+    "status": "Status",
+    "code": "Code",
+    "name": "Name",
+    "email": "Email",
+    "people": "People",
+    "noBookings": "No bookings for this ride."
+  },
+  "email": {
+    "confirmationSubject": "Sette Lune – Transfer booking confirmation {{code}}",
+    "internalSubject": "New transfer booking – {{code}}"
+  },
+  "common": {
+    "euro": "€"
+  }
+}

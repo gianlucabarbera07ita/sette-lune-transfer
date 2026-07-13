@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pannello prenotazioni – Sette Lune</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="/admin">Pannello prenotazioni</a>
+      <form method="POST" action="/admin/logout">
+        <button type="submit" class="btn-secondary">Esci</button>
+      </form>
+    </div>
+  </header>
+  <main class="container">
+    <p class="event-meta">
+      Prenotazioni pagate: <strong><%= paidCount %></strong> ·
+      In attesa di pagamento (hold attivo): <strong><%= pendingCount %></strong>
+    </p>
+
+    <% events.forEach(function (event) { %>
+      <div class="event-card">
+        <h2><%= event.nameIt %></h2>
+        <p class="event-meta"><%= event.descriptionIt %></p>
+
+        <h3>Andata</h3>
+        <table class="admin-table">
+          <thead><tr><th>Orario</th><th>Prenotati</th><th>In attesa</th><th>Liberi</th><th></th></tr></thead>
+          <tbody>
+            <% event.slots.filter(function (s) { return s.direction === 'ANDATA'; }).forEach(function (slot) { %>
+              <tr>
+                <td><%= formatDateLong(slot.departureAt, 'it') %> — <%= formatTime(slot.departureAt, 'it') %></td>
+                <td><%= slot.capacityBooked %></td>
+                <td><%= slot.capacityHeld %></td>
+                <td><%= slot.capacityTotal - slot.capacityBooked - slot.capacityHeld %> / <%= slot.capacityTotal %></td>
+                <td>
+                  <a href="/admin/slot/<%= slot.id %>">Vedi lista</a> ·
+                  <a href="/admin/slot/<%= slot.id %>/export.csv">CSV</a>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+
+        <h3>Ritorno</h3>
+        <table class="admin-table">
+          <thead><tr><th>Orario</th><th>Prenotati</th><th>In attesa</th><th>Liberi</th><th></th></tr></thead>
+          <tbody>
+            <% event.slots.filter(function (s) { return s.direction === 'RITORNO'; }).forEach(function (slot) { %>
+              <tr>
+                <td><%= formatDateLong(slot.departureAt, 'it') %> — <%= formatTime(slot.departureAt, 'it') %></td>
+                <td><%= slot.capacityBooked %></td>
+                <td><%= slot.capacityHeld %></td>
+                <td><%= slot.capacityTotal - slot.capacityBooked - slot.capacityHeld %> / <%= slot.capacityTotal %></td>
+                <td>
+                  <a href="/admin/slot/<%= slot.id %>">Vedi lista</a> ·
+                  <a href="/admin/slot/<%= slot.id %>/export.csv">CSV</a>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% }) %>
+  </main>
+</body>
+</html>

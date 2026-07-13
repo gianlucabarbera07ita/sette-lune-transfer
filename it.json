@@ -1,0 +1,93 @@
+{
+  "siteName": "Sette Lune – Transfer Festival",
+  "nav": {
+    "home": "Transfer",
+    "cart": "Carrello"
+  },
+  "home": {
+    "title": "Prenota i tuoi transfer per Sette Lune",
+    "intro": "Piazza Sant'Agostino, Trapani – punto di ritrovo per tutte le partenze. Scegli le corse che ti servono per ciascuna giornata: puoi prenotare più giorni in un unico pagamento.",
+    "meetingPoint": "Punto di ritrovo",
+    "travelTime": "Percorrenza",
+    "minutes": "minuti",
+    "outbound": "Andata",
+    "return": "Ritorno",
+    "seatsLeft": "posti disponibili",
+    "soldOut": "Esaurito",
+    "secretLocationNotice": "Location segreta: la posizione esatta verrà comunicata il giorno stesso dell'evento.",
+    "chooseType": "Tipo di transfer",
+    "oneWayOutbound": "Solo andata",
+    "oneWayReturn": "Solo ritorno",
+    "roundTrip": "Andata e ritorno",
+    "outboundTime": "Orario andata",
+    "returnTime": "Orario ritorno",
+    "people": "Numero persone",
+    "addToCart": "Aggiungi al carrello",
+    "price": "Prezzo",
+    "perPerson": "a persona",
+    "selectOption": "Seleziona un orario"
+  },
+  "cart": {
+    "title": "Il tuo carrello",
+    "empty": "Il carrello è vuoto. Torna alla pagina dei transfer per aggiungere una prenotazione.",
+    "backToHome": "Torna ai transfer",
+    "event": "Evento",
+    "type": "Tipo",
+    "people": "Persone",
+    "outboundTime": "Andata",
+    "returnTime": "Ritorno",
+    "price": "Prezzo",
+    "remove": "Rimuovi",
+    "total": "Totale",
+    "continueTitle": "I tuoi dati",
+    "name": "Nome e cognome",
+    "email": "Email (riceverai qui la conferma con il tuo codice prenotazione)",
+    "emailConfirm": "Conferma email",
+    "paymentMethod": "Metodo di pagamento",
+    "payWithCard": "Paga con carta",
+    "payWithPaypal": "Paga con PayPal",
+    "submit": "Vai al pagamento",
+    "unavailableNotice": "Alcuni posti nel carrello non sono più disponibili nella quantità richiesta. Riduci il numero di persone o rimuovi la riga prima di continuare.",
+    "emailMismatch": "Le due email inserite non coincidono.",
+    "errorGeneric": "Controlla i dati inseriti e riprova.",
+    "paymentCancelled": "Il pagamento è stato annullato. I posti sono stati rilasciati, puoi riprovare quando vuoi."
+  },
+  "confirmation": {
+    "titlePaid": "Prenotazione confermata!",
+    "titlePending": "Stiamo verificando il pagamento…",
+    "titleFailed": "Pagamento non riuscito",
+    "code": "Codice prenotazione",
+    "codeNotice": "Conserva questo codice: ti verrà chiesto prima di salire sul transfer.",
+    "pendingNotice": "Il pagamento è in corso di verifica, la pagina si aggiornerà automaticamente. Se non cambia entro un minuto, controlla la tua email.",
+    "failedNotice": "Il pagamento non è andato a buon fine o è scaduto. I posti sono stati rilasciati, puoi riprovare dal carrello.",
+    "backToHome": "Torna ai transfer",
+    "summary": "Riepilogo prenotazione",
+    "emailSentNotice": "Ti abbiamo inviato una email di conferma con tutti i dettagli."
+  },
+  "admin": {
+    "loginTitle": "Accesso pannello prenotazioni",
+    "password": "Password",
+    "login": "Accedi",
+    "wrongPassword": "Password errata",
+    "title": "Pannello prenotazioni",
+    "logout": "Esci",
+    "filterAll": "Tutte le corse",
+    "exportCsv": "Esporta CSV",
+    "seatsBooked": "prenotati",
+    "seatsHeld": "in attesa di pagamento",
+    "seatsFree": "liberi",
+    "status": "Stato",
+    "code": "Codice",
+    "name": "Nome",
+    "email": "Email",
+    "people": "Persone",
+    "noBookings": "Nessuna prenotazione per questa corsa."
+  },
+  "email": {
+    "confirmationSubject": "Sette Lune – Conferma prenotazione transfer {{code}}",
+    "internalSubject": "Nuova prenotazione transfer – {{code}}"
+  },
+  "common": {
+    "euro": "€"
+  }
+}

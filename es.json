@@ -1,0 +1,93 @@
+{
+  "siteName": "Sette Lune – Traslados del Festival",
+  "nav": {
+    "home": "Traslados",
+    "cart": "Carrito"
+  },
+  "home": {
+    "title": "Reserva tus traslados para Sette Lune",
+    "intro": "Piazza Sant'Agostino, Trapani – punto de encuentro para todas las salidas. Elige los traslados que necesitas para cada día: puedes reservar varios días en un único pago.",
+    "meetingPoint": "Punto de encuentro",
+    "travelTime": "Duración del trayecto",
+    "minutes": "minutos",
+    "outbound": "Ida",
+    "return": "Vuelta",
+    "seatsLeft": "plazas disponibles",
+    "soldOut": "Agotado",
+    "secretLocationNotice": "Ubicación secreta: la posición exacta se comunicará el mismo día del evento.",
+    "chooseType": "Tipo de traslado",
+    "oneWayOutbound": "Solo ida",
+    "oneWayReturn": "Solo vuelta",
+    "roundTrip": "Ida y vuelta",
+    "outboundTime": "Hora de ida",
+    "returnTime": "Hora de vuelta",
+    "people": "Número de personas",
+    "addToCart": "Añadir al carrito",
+    "price": "Precio",
+    "perPerson": "por persona",
+    "selectOption": "Selecciona un horario"
+  },
+  "cart": {
+    "title": "Tu carrito",
+    "empty": "Tu carrito está vacío. Vuelve a la página de traslados para añadir una reserva.",
+    "backToHome": "Volver a los traslados",
+    "event": "Evento",
+    "type": "Tipo",
+    "people": "Personas",
+    "outboundTime": "Ida",
+    "returnTime": "Vuelta",
+    "price": "Precio",
+    "remove": "Eliminar",
+    "total": "Total",
+    "continueTitle": "Tus datos",
+    "name": "Nombre y apellidos",
+    "email": "Email (recibirás aquí la confirmación con tu código de reserva)",
+    "emailConfirm": "Confirmar email",
+    "paymentMethod": "Método de pago",
+    "payWithCard": "Pagar con tarjeta",
+    "payWithPaypal": "Pagar con PayPal",
+    "submit": "Continuar al pago",
+    "unavailableNotice": "Algunos elementos del carrito ya no están disponibles en la cantidad solicitada. Reduce el número de personas o elimina la línea antes de continuar.",
+    "emailMismatch": "Los dos emails introducidos no coinciden.",
+    "errorGeneric": "Revisa los datos introducidos e inténtalo de nuevo.",
+    "paymentCancelled": "El pago ha sido cancelado. Las plazas se han liberado, puedes intentarlo de nuevo cuando quieras."
+  },
+  "confirmation": {
+    "titlePaid": "¡Reserva confirmada!",
+    "titlePending": "Verificando el pago…",
+    "titleFailed": "Pago no realizado",
+    "code": "Código de reserva",
+    "codeNotice": "Conserva este código: te lo pedirán antes de subir al transfer.",
+    "pendingNotice": "El pago se está verificando, esta página se actualizará automáticamente. Si no cambia en un minuto, revisa tu email.",
+    "failedNotice": "El pago falló o caducó. Las plazas se han liberado, puedes intentarlo de nuevo desde el carrito.",
+    "backToHome": "Volver a los traslados",
+    "summary": "Resumen de la reserva",
+    "emailSentNotice": "Te hemos enviado un email de confirmación con todos los detalles."
+  },
+  "admin": {
+    "loginTitle": "Acceso al panel de reservas",
+    "password": "Contraseña",
+    "login": "Entrar",
+    "wrongPassword": "Contraseña incorrecta",
+    "title": "Panel de reservas",
+    "logout": "Salir",
+    "filterAll": "Todos los traslados",
+    "exportCsv": "Exportar CSV",
+    "seatsBooked": "reservados",
+    "seatsHeld": "pago pendiente",
+    "seatsFree": "libres",
+    "status": "Estado",
+    "code": "Código",
+    "name": "Nombre",
+    "email": "Email",
+    "people": "Personas",
+    "noBookings": "No hay reservas para este traslado."
+  },
+  "email": {
+    "confirmationSubject": "Sette Lune – Confirmación de reserva de traslado {{code}}",
+    "internalSubject": "Nueva reserva de traslado – {{code}}"
+  },
+  "common": {
+    "euro": "€"
+  }
+}

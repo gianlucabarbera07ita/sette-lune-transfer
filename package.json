@@ -1,0 +1,32 @@
+{
+  "name": "sette-lune-transfer",
+  "version": "1.0.0",
+  "description": "Piattaforma di prenotazione transfer per il festival Sette Lune",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "NODE_ENV=development node src/server.js",
+    "start": "node src/server.js",
+    "build": "prisma generate",
+    "release": "prisma db push --skip-generate && node prisma/seed.js",
+    "seed": "node prisma/seed.js",
+    "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio",
+    "test": "node --test"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.0",
+    "express-session": "^1.18.0",
+    "nodemailer": "^6.9.15",
+    "stripe": "^16.12.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.20.0"
+  }
+}

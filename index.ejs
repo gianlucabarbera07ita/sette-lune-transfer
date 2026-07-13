@@ -1,0 +1,110 @@
+<%- include('partials/header') %>
+
+<h1><%= t('home.title') %></h1>
+<p class="intro"><%= t('home.intro') %></p>
+
+<% events.forEach(function (event) { %>
+  <div class="event-card">
+    <h2><%= eventName(event, lang) %></h2>
+    <p class="event-meta">
+      <%= eventDescription(event, lang) %><br>
+      <%= t('home.meetingPoint') %>: <%= event.meetingPoint %> ·
+      <%= t('home.travelTime') %>: <%= event.travelMinutes %> <%= t('home.minutes') %>
+    </p>
+
+    <% if (event.isSecretLocation) { %>
+      <div class="secret-notice"><%= t('home.secretLocationNotice') %></div>
+    <% } %>
+
+    <div class="price-table">
+      <% event.priceRules.forEach(function (rule) { %>
+        <div>
+          <%= t('home.' + TYPE_TO_I18N_KEY[rule.type]) %>:
+          <strong><%= formatEuro(rule.priceEuroCents) %> €</strong>
+          <%= t('home.perPerson') %>
+        </div>
+      <% }) %>
+    </div>
+
+    <p><strong><%= t('home.outbound') %></strong></p>
+    <div class="slot-list">
+      <% event.andataSlots.forEach(function (slot) { %>
+        <span class="slot-pill <%= slot.seatsAvailable === 0 ? 'sold-out' : '' %>">
+          <%= formatTime(slot.departureAt, lang) %>
+          <% if (slot.seatsAvailable > 0) { %>
+            — <%= slot.seatsAvailable %> <%= t('home.seatsLeft') %>
+          <% } else { %>
+            — <%= t('home.soldOut') %>
+          <% } %>
+        </span>
+      <% }) %>
+    </div>
+
+    <p><strong><%= t('home.return') %></strong></p>
+    <div class="slot-list">
+      <% event.ritornoSlots.forEach(function (slot) { %>
+        <span class="slot-pill <%= slot.seatsAvailable === 0 ? 'sold-out' : '' %>">
+          <%= formatTime(slot.departureAt, lang) %>
+          <% if (slot.seatsAvailable > 0) { %>
+            — <%= slot.seatsAvailable %> <%= t('home.seatsLeft') %>
+          <% } else { %>
+            — <%= t('home.soldOut') %>
+          <% } %>
+        </span>
+      <% }) %>
+    </div>
+
+    <form class="add-form" method="POST" action="/<%= lang %>/cart/add">
+      <input type="hidden" name="eventId" value="<%= event.id %>">
+
+      <div class="form-row radio-group">
+        <label><%= t('home.chooseType') %></label>
+        <label>
+          <input type="radio" name="type" value="SOLO_ANDATA" checked>
+          <%= t('home.oneWayOutbound') %>
+        </label>
+        <label>
+          <input type="radio" name="type" value="SOLO_RITORNO">
+          <%= t('home.oneWayReturn') %>
+        </label>
+        <label>
+          <input type="radio" name="type" value="ANDATA_RITORNO">
+          <%= t('home.roundTrip') %>
+        </label>
+      </div>
+
+      <div class="form-row andata-field">
+        <label for="andataSlotId-<%= event.id %>"><%= t('home.outboundTime') %></label>
+        <select id="andataSlotId-<%= event.id %>" name="andataSlotId">
+          <option value=""><%= t('home.selectOption') %></option>
+          <% event.andataSlots.forEach(function (slot) { %>
+            <option value="<%= slot.id %>" <%= slot.seatsAvailable === 0 ? 'disabled' : '' %>>
+              <%= formatTime(slot.departureAt, lang) %> (<%= slot.seatsAvailable %> <%= t('home.seatsLeft') %>)
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="form-row ritorno-field">
+        <label for="ritornoSlotId-<%= event.id %>"><%= t('home.returnTime') %></label>
+        <select id="ritornoSlotId-<%= event.id %>" name="ritornoSlotId">
+          <option value=""><%= t('home.selectOption') %></option>
+          <% event.ritornoSlots.forEach(function (slot) { %>
+            <option value="<%= slot.id %>" <%= slot.seatsAvailable === 0 ? 'disabled' : '' %>>
+              <%= formatTime(slot.departureAt, lang) %> (<%= slot.seatsAvailable %> <%= t('home.seatsLeft') %>)
+            </option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label for="numPeople-<%= event.id %>"><%= t('home.people') %></label>
+        <input type="number" id="numPeople-<%= event.id %>" name="numPeople" min="1" max="16" value="1">
+      </div>
+
+      <button type="submit"><%= t('home.addToCart') %></button>
+    </form>
+  </div>
+<% }) %>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,68 @@
+# Blueprint Render: definisce insieme il database Postgres persistente e il
+# servizio web, cosi' un solo "New Blueprint" su Render crea tutto pronto.
+# Le migrazioni Prisma e il seed dei dati girano automaticamente ad ogni
+# deploy tramite preDeployCommand, PRIMA che la nuova versione prenda
+# traffico: e' la parte che risolve il bug del vecchio sito (orari che
+# sparivano dopo un deploy).
+
+databases:
+  - name: sette-lune-db
+    plan: basic-256mb
+    databaseName: settelune
+    user: settelune
+
+services:
+  - type: web
+    name: sette-lune-transfer
+    runtime: node
+    plan: starter
+    buildCommand: npm install && npx prisma generate
+    # Usiamo "prisma db push" (sincronizza lo schema direttamente) invece di
+    # "prisma migrate deploy" perché quest'ultimo richiede file di migrazione
+    # già generati in precedenza con una connessione diretta al database, che
+    # non è disponibile in questa fase di creazione del progetto. "db push" è
+    # idempotente: ad ogni deploy porta le tabelle allo stato definito in
+    # schema.prisma. Senza il flag --accept-data-loss, Prisma si rifiuta da
+    # solo (ed esce con errore, bloccando il deploy) se una modifica futura
+    # allo schema fosse potenzialmente distruttiva per i dati esistenti,
+    # invece di applicarla silenziosamente: va vista come una rete di
+    # sicurezza, non un intoppo.
+    preDeployCommand: npx prisma db push --skip-generate && node prisma/seed.js
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sette-lune-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: CART_COOKIE_SECRET
+        generateValue: true
+      # Le seguenti vanno impostate a mano dalla dashboard Render dopo il
+      # primo deploy (sync: false = non gestite dal blueprint, restano
+      # private e non finiscono mai nel repository Git).
+      - key: BASE_URL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
+      - key: PAYPAL_ENV
+        value: sandbox
+      - key: PAYPAL_WEBHOOK_ID
+        sync: false
+      - key: GMAIL_USER
+        sync: false
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+      - key: INTERNAL_NOTIFICATION_EMAILS
+        sync: false

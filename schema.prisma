@@ -1,0 +1,134 @@
+// Schema del database per la piattaforma di prenotazione transfer
+// del festival Sette Lune. Postgres persistente su Render: le migrazioni
+// (prisma migrate deploy) girano automaticamente ad ogni deploy, quindi
+// i dati NON vengono mai persi o azzerati da un nuovo push.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Direction {
+  ANDATA
+  RITORNO
+}
+
+enum BookingType {
+  SOLO_ANDATA
+  SOLO_RITORNO
+  ANDATA_RITORNO
+}
+
+enum BookingStatus {
+  PENDING
+  PAID
+  EXPIRED
+  FAILED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  STRIPE
+  PAYPAL
+}
+
+model Event {
+  id             Int      @id @default(autoincrement())
+  slug           String   @unique
+  // Data "etichetta" dell'evento (es. 6 agosto), usata per raggruppare
+  // prezzi e mostrare la giornata in home, anche se alcune corse di
+  // ritorno cadono tecnicamente dopo la mezzanotte (vedi TransferSlot.departureAt).
+  labelDate      DateTime
+  nameIt         String
+  nameEn         String
+  nameEs         String
+  descriptionIt  String?
+  descriptionEn  String?
+  descriptionEs  String?
+  meetingPoint   String   @default("Piazza Sant'Agostino, Trapani")
+  travelMinutes  Int
+  sortOrder      Int      @default(0)
+  isSecretLocation Boolean @default(false)
+
+  slots        TransferSlot[]
+  priceRules   PriceRule[]
+  bookingItems BookingItem[]
+  createdAt    DateTime @default(now())
+}
+
+model TransferSlot {
+  id             Int       @id @default(autoincrement())
+  eventId        Int
+  event          Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  direction      Direction
+  // Data/ora reale di partenza (con roll-over al giorno successivo per le
+  // corse dopo mezzanotte), usata per ordinamento e per il display corretto.
+  departureAt    DateTime
+  capacityTotal  Int
+  // Posti bloccati temporaneamente (checkout in corso, non ancora pagato)
+  capacityHeld   Int       @default(0)
+  // Posti confermati (pagamento riuscito)
+  capacityBooked Int       @default(0)
+
+  andataItems    BookingItem[] @relation("AndataSlot")
+  ritornoItems   BookingItem[] @relation("RitornoSlot")
+  createdAt      DateTime  @default(now())
+
+  @@index([eventId, direction])
+  @@unique([eventId, direction, departureAt])
+}
+
+model PriceRule {
+  id             Int         @id @default(autoincrement())
+  eventId        Int
+  event          Event       @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  type           BookingType
+  priceEuroCents Int
+
+  @@unique([eventId, type])
+}
+
+model Booking {
+  id             Int            @id @default(autoincrement())
+  // Codice identificativo mostrato al cliente, generato SOLO alla conferma
+  // del pagamento (mai prima, per evitare codici "orfani" di prenotazioni
+  // mai pagate).
+  code           String?        @unique
+  customerName   String
+  customerEmail  String
+  language       String         @default("it")
+  status         BookingStatus  @default(PENDING)
+  paymentMethod  PaymentMethod?
+  totalEuroCents Int
+  // Id sessione Stripe Checkout o Order PayPal, per riconciliazione/idempotenza
+  paymentRef     String?
+  holdExpiresAt  DateTime?
+  paidAt         DateTime?
+  items          BookingItem[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([status])
+  @@index([paymentRef])
+  @@index([customerEmail])
+}
+
+model BookingItem {
+  id             Int          @id @default(autoincrement())
+  bookingId      Int
+  booking        Booking      @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  eventId        Int
+  event          Event        @relation(fields: [eventId], references: [id])
+  type           BookingType
+  numPeople      Int
+  priceEuroCents Int
+  andataSlotId   Int?
+  andataSlot     TransferSlot? @relation("AndataSlot", fields: [andataSlotId], references: [id])
+  ritornoSlotId  Int?
+  ritornoSlot    TransferSlot? @relation("RitornoSlot", fields: [ritornoSlotId], references: [id])
+  createdAt      DateTime     @default(now())
+}

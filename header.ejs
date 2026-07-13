@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= t('siteName') %></title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="/<%= lang %>/"><%= t('siteName') %></a>
+      <nav>
+        <a href="/<%= lang %>/"><%= t('nav.home') %></a>
+        <a href="/<%= lang %>/carrello"><%= t('nav.cart') %></a>
+      </nav>
+      <div class="lang-switch">
+        <% supportedLangs.forEach(function (l) { %>
+          <a class="<%= l === lang ? 'active' : '' %>" href="/<%= l %>/<%= currentPath %>"><%= l.toUpperCase() %></a>
+        <% }) %>
+      </div>
+    </div>
+  </header>
+  <main class="container">

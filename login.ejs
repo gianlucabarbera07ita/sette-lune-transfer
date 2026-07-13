@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accesso pannello prenotazioni – Sette Lune</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+  <main class="container" style="max-width:400px; padding-top:60px;">
+    <h1>Accesso pannello prenotazioni</h1>
+    <% if (error) { %>
+      <div class="notice error"><%= error %></div>
+    <% } %>
+    <form method="POST" action="/admin/login">
+      <div class="form-row">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autofocus>
+      </div>
+      <button type="submit">Accedi</button>
+    </form>
+  </main>
+</body>
+</html>

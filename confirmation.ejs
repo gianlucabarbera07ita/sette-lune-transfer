@@ -1,0 +1,46 @@
+<%- include('partials/header') %>
+
+<% if (booking.status === 'PAID') { %>
+  <h1><%= t('confirmation.titlePaid') %></h1>
+  <div class="confirmation-code"><%= booking.code %></div>
+  <p><%= t('confirmation.codeNotice') %></p>
+  <p class="notice success"><%= t('confirmation.emailSentNotice') %></p>
+<% } else if (booking.status === 'PENDING') { %>
+  <meta http-equiv="refresh" content="3">
+  <h1><%= t('confirmation.titlePending') %></h1>
+  <p><%= t('confirmation.pendingNotice') %></p>
+<% } else { %>
+  <h1><%= t('confirmation.titleFailed') %></h1>
+  <p class="notice error"><%= t('confirmation.failedNotice') %></p>
+<% } %>
+
+<h2><%= t('confirmation.summary') %></h2>
+<table class="cart-table">
+  <thead>
+    <tr>
+      <th><%= t('cart.event') %></th>
+      <th><%= t('cart.type') %></th>
+      <th><%= t('cart.outboundTime') %></th>
+      <th><%= t('cart.returnTime') %></th>
+      <th><%= t('cart.people') %></th>
+      <th><%= t('cart.price') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% booking.items.forEach(function (item) { %>
+      <tr>
+        <td><%= eventName(item.event, lang) %></td>
+        <td><%= t('home.' + TYPE_TO_I18N_KEY[item.type]) %></td>
+        <td><%= item.andataSlot ? formatTime(item.andataSlot.departureAt, lang) : '—' %></td>
+        <td><%= item.ritornoSlot ? formatTime(item.ritornoSlot.departureAt, lang) : '—' %></td>
+        <td><%= item.numPeople %></td>
+        <td><%= formatEuro(item.priceEuroCents) %> €</td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+<p class="cart-total"><%= t('cart.total') %>: <strong><%= formatEuro(booking.totalEuroCents) %> €</strong></p>
+
+<p><a href="/<%= lang %>/"><%= t('confirmation.backToHome') %></a></p>
+
+<%- include('partials/footer') %>
