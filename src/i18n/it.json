@@ -25,7 +25,8 @@
     "addToCart": "Aggiungi al carrello",
     "price": "Prezzo",
     "perPerson": "a persona",
-    "selectOption": "Seleziona un orario"
+    "selectOption": "Seleziona un orario",
+    "addedNotice": "Aggiunto al carrello! Puoi continuare a scegliere altri transfer per altri giorni, e andare al"
   },
   "cart": {
     "title": "Il tuo carrello",
