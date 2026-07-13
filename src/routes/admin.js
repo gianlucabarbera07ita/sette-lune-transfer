@@ -46,6 +46,7 @@ router.get('/', requireAdmin, async (req, res, next) => {
       paidCount,
       formatDateLong,
       formatTime,
+      resetDone: req.query.reset === '1',
     });
   } catch (err) {
     next(err);
@@ -112,6 +113,67 @@ router.get('/slot/:id/export.csv', requireAdmin, async (req, res, next) => {
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.send('﻿' + csv); // BOM esplicito, per aprire correttamente gli accenti in Excel
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Export unico con TUTTE le prenotazioni pagate, di tutti i giorni e le
+// corse, in un solo file — utile per un riepilogo generale / contabilità,
+// a differenza dell'export per singola corsa (pensato per il check-in).
+router.get('/export-all.csv', requireAdmin, async (req, res, next) => {
+  try {
+    const bookingItems = await prisma.bookingItem.findMany({
+      where: { booking: { status: 'PAID' } },
+      include: {
+        booking: true,
+        event: true,
+        andataSlot: true,
+        ritornoSlot: true,
+      },
+      orderBy: [{ booking: { paidAt: 'asc' } }],
+    });
+
+    const header = [
+      'Codice', 'Nome', 'Email', 'Evento', 'Tipo', 'Persone',
+      'Andata', 'Ritorno', 'Prezzo (EUR)', 'Metodo pagamento', 'Data pagamento',
+    ];
+    const rows = bookingItems.map((item) => [
+      item.booking.code,
+      item.booking.customerName,
+      item.booking.customerEmail,
+      item.event.nameIt,
+      TYPE_LABELS[item.type] || item.type,
+      item.numPeople,
+      item.andataSlot ? `${formatDateLong(item.andataSlot.departureAt, 'it')} ${formatTime(item.andataSlot.departureAt, 'it')}` : '',
+      item.ritornoSlot ? `${formatDateLong(item.ritornoSlot.departureAt, 'it')} ${formatTime(item.ritornoSlot.departureAt, 'it')}` : '',
+      (item.priceEuroCents / 100).toFixed(2),
+      item.booking.paymentMethod || '',
+      item.booking.paidAt ? item.booking.paidAt.toISOString() : '',
+    ]);
+
+    const csv = [header, ...rows].map((row) => row.map(csvEscape).join(';')).join('\n');
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="tutte-le-prenotazioni.csv"');
+    res.send('﻿' + csv); // BOM esplicito, per aprire correttamente gli accenti in Excel
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Azzera TUTTE le prenotazioni (pagate e in attesa) e libera tutti i posti.
+// Pensato per ripulire i dati di test prima dell'apertura vendite vera.
+// Azione distruttiva e irreversibile: da NON usare dopo aver aperto le
+// vendite reali, perché cancellerebbe anche le prenotazioni vere.
+router.post('/reset-bookings', requireAdmin, async (req, res, next) => {
+  try {
+    await prisma.$transaction([
+      prisma.bookingItem.deleteMany({}),
+      prisma.booking.deleteMany({}),
+      prisma.transferSlot.updateMany({ data: { capacityBooked: 0, capacityHeld: 0 } }),
+    ]);
+    res.redirect('/admin?reset=1');
   } catch (err) {
     next(err);
   }
