@@ -103,8 +103,32 @@ async function confirmBookingPaid(bookingId, { paymentMethod, paymentRef }) {
       });
       return { booking: full, alreadyPaid: true };
     }
-    if (booking.status !== 'PENDING') {
-      throw new Error(`Booking ${bookingId} in stato inatteso: ${booking.status}`);
+
+    const code = await generateUniqueBookingCode(tx);
+
+    // Transizione atomica PENDING -> PAID: se nello stesso istante il job di
+    // pulizia degli hold scaduti (holdCleanup.js) sta scadendo questa stessa
+    // prenotazione, oppure arriva un webhook duplicato, solo UNA delle due
+    // operazioni concorrenti riesce davvero a modificare la riga (l'altra
+    // trova 0 righe aggiornate e non tocca i posti). Senza questa guardia,
+    // in quella rara coincidenza temporale capacityHeld poteva essere
+    // decrementato due volte, facendo apparire posti liberi inesistenti.
+    const claim = await tx.booking.updateMany({
+      where: { id: bookingId, status: 'PENDING' },
+      data: { status: 'PAID', code, paymentMethod, paymentRef, paidAt: new Date() },
+    });
+
+    if (claim.count === 0) {
+      const current = await tx.booking.findUnique({
+        where: { id: bookingId },
+        include: { items: { include: { event: true, andataSlot: true, ritornoSlot: true } } },
+      });
+      if (current && current.status === 'PAID') {
+        return { booking: current, alreadyPaid: true };
+      }
+      throw new Error(
+        `Booking ${bookingId} in stato inatteso durante la conferma: ${current ? current.status : 'non trovato'}`
+      );
     }
 
     for (const item of booking.items) {
@@ -122,11 +146,8 @@ async function confirmBookingPaid(bookingId, { paymentMethod, paymentRef }) {
       }
     }
 
-    const code = await generateUniqueBookingCode(tx);
-
-    const updated = await tx.booking.update({
+    const updated = await tx.booking.findUnique({
       where: { id: bookingId },
-      data: { status: 'PAID', code, paymentMethod, paymentRef, paidAt: new Date() },
       include: { items: { include: { event: true, andataSlot: true, ritornoSlot: true } } },
     });
     return { booking: updated, alreadyPaid: false };
@@ -142,7 +163,18 @@ async function confirmBookingPaid(bookingId, { paymentMethod, paymentRef }) {
 async function markBookingFailed(bookingId) {
   return prisma.$transaction(async (tx) => {
     const booking = await tx.booking.findUnique({ where: { id: bookingId }, include: { items: true } });
-    if (!booking || booking.status !== 'PENDING') return booking;
+    if (!booking) return booking;
+
+    // Stessa guardia atomica di confirmBookingPaid: evita un doppio rilascio
+    // dei posti se questa prenotazione viene gestita quasi simultaneamente
+    // da un altro processo (es. il job di pulizia hold scaduti).
+    const claim = await tx.booking.updateMany({
+      where: { id: bookingId, status: 'PENDING' },
+      data: { status: 'FAILED' },
+    });
+    if (claim.count === 0) {
+      return tx.booking.findUnique({ where: { id: bookingId } });
+    }
 
     for (const item of booking.items) {
       if (item.andataSlotId) {
@@ -153,7 +185,7 @@ async function markBookingFailed(bookingId) {
       }
     }
 
-    return tx.booking.update({ where: { id: bookingId }, data: { status: 'FAILED' } });
+    return tx.booking.findUnique({ where: { id: bookingId } });
   });
 }
 
