@@ -12,9 +12,22 @@ async function releaseExpiredHolds() {
     include: { items: true },
   });
 
+  let releasedCount = 0;
+
   for (const booking of expired) {
     try {
       await prisma.$transaction(async (tx) => {
+        // Reclamo atomico: se nel frattempo il pagamento è stato confermato
+        // (o un'altra chiamata ha già gestito questa prenotazione), questo
+        // aggiornamento non tocca nessuna riga e NON dobbiamo decrementare
+        // i posti — altrimenti rischieremmo di liberarli due volte (vedi lo
+        // stesso meccanismo in confirmBookingPaid/markBookingFailed).
+        const claim = await tx.booking.updateMany({
+          where: { id: booking.id, status: 'PENDING' },
+          data: { status: 'EXPIRED' },
+        });
+        if (claim.count === 0) return;
+
         for (const item of booking.items) {
           if (item.andataSlotId) {
             await tx.transferSlot.update({
@@ -29,8 +42,8 @@ async function releaseExpiredHolds() {
             });
           }
         }
-        await tx.booking.update({ where: { id: booking.id }, data: { status: 'EXPIRED' } });
       });
+      releasedCount++;
     } catch (err) {
       // Non blocchiamo il ciclo per un singolo errore: verrà ritentato al
       // prossimo giro se il problema persiste, e loggato per essere notato.
@@ -38,7 +51,7 @@ async function releaseExpiredHolds() {
     }
   }
 
-  return expired.length;
+  return releasedCount;
 }
 
 function startHoldCleanupJob(intervalMs = 60 * 1000) {
